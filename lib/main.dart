@@ -12,6 +12,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Tracker',
       home: MyHomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+
+      ),
     );
   }
 }
@@ -61,19 +66,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('Expense Tracker'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () =>_startAddNewTransaction(context)
-            ,
+            onPressed: () => _startAddNewTransaction(context),
           ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () =>_startAddNewTransaction(context),
+        onPressed: () => _startAddNewTransaction(context),
       ),
       body: SingleChildScrollView(
         child: Column(
