@@ -1,11 +1,34 @@
 import 'package:flutter/material.dart';
 
-class NewTransaction extends StatelessWidget {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class NewTransaction extends StatefulWidget {
   final Function addTransaction;
 
   NewTransaction(this.addTransaction);
+
+  @override
+  _NewTransactionState createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
+  final titleController = TextEditingController();
+
+  final amountController = TextEditingController();
+
+  void submitTransaction() {
+    final titleEntered = titleController.text;
+    final amountEntered = double.parse(amountController.text);
+
+    if (titleEntered.isEmpty || amountEntered <= 0) {
+      return;
+    }
+
+    widget.addTransaction(
+        titleController.text, double.parse(amountController.text));
+
+    // closes the BottomSheet Dialog
+    // here context is the property available in class itself like widget is available.
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +56,12 @@ class NewTransaction extends StatelessWidget {
                 labelText: 'Enter Amount',
               ),
               controller: amountController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (_) => submitTransaction(),
             ),
             FlatButton(
               textColor: Colors.purple,
-              onPressed: () {
-                addTransaction(
-                  titleController.text,
-                  double.parse(amountController.text),
-                );
-                print(titleController.text);
-                print(amountController.text);
-              },
+              onPressed: submitTransaction,
               child: Text('Add Transaction'),
             ),
           ],
