@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
-
-      ),
+        fontFamily: 'Quicksand',
+      ), // Setting global font
     );
   }
 }
