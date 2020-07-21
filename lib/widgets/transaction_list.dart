@@ -4,12 +4,13 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _userTransaction;
-  TransactionList(this._userTransaction);
+  final Function deleteTransaction;
+  TransactionList(this._userTransaction, this.deleteTransaction);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: 400,
       child: _userTransaction.isEmpty
           ? Column(
               children: <Widget>[
@@ -17,7 +18,9 @@ class TransactionList extends StatelessWidget {
                   'No Transaction Added yet',
                   style: Theme.of(context).textTheme.headline6,
                 ),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 Container(
                   height: 200,
                   child: Image.asset(
@@ -29,53 +32,35 @@ class TransactionList extends StatelessWidget {
             )
           : ListView.builder(
               itemBuilder: (ctx, index) {
+                var ts = _userTransaction[index];
                 return Card(
-                    child: Row(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 8,
-                      ),
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColorDark,
-                          width: 2,
-                          style: BorderStyle.solid,
-                        ),
-                      ),
-                      child: Text(
-                        '\$ ${_userTransaction[index].amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: FittedBox(
+                            child: Text(
+                          ts.amount.toStringAsFixed(2),
+                        )),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          _userTransaction[index].title,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        Text(
-                          DateFormat.yMMMd()
-                              .format(_userTransaction[index].date),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black45,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ));
+                    title: Text(
+                      ts.title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(DateFormat.yMMMd().format(ts.date)),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () {
+                        deleteTransaction(ts.id);
+                      },
+                    ),
+                  ),
+                );
               },
               itemCount: _userTransaction.length,
             ),

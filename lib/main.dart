@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_expenses/widgets/chart.dart';
 import 'package:personal_expenses/widgets/new_transaction.dart';
 import 'package:personal_expenses/widgets/transaction_list.dart';
 
@@ -17,11 +18,15 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.amber,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-                headline6: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: "OpenSans",
-              fontSize: 16,
-            )),
+              headline6: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: "OpenSans",
+                fontSize: 16,
+              ),
+              button: TextStyle(
+                color: Colors.white,
+              ),
+            ),
         appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
                   headline6: TextStyle(
@@ -43,15 +48,32 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [];
 
-  void _addNewTransaction(String tsTitle, double tsAmount) {
+  List<Transaction> get _recentTransaction {
+    return _userTransactions.where((element) {
+      return element.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
+
+  void _addNewTransaction(
+      String tsTitle, double tsAmount, DateTime choosenDate) {
     final Transaction newTs = Transaction(
         title: tsTitle,
         amount: tsAmount,
         id: DateTime.now().toString(),
-        date: DateTime.now());
+        date: choosenDate);
 
     setState(() {
       _userTransactions.add(newTs);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) => element.id == id);
     });
   }
 
@@ -85,15 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
           //mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                child: Text(
-                  'CHART',
-                ),
-              ),
-            ),
-            TransactionList(_userTransactions),
+            Chart(_recentTransaction),
+            TransactionList(_userTransactions,_deleteTransaction),
           ],
         ),
       ),
