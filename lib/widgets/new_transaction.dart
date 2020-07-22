@@ -20,12 +20,12 @@ class _NewTransactionState extends State<NewTransaction> {
     final titleEntered = _titleController.text;
     final amountEntered = double.parse(_amountController.text);
 
-    if (titleEntered.isEmpty || amountEntered <= 0 || _selectedDate==null) {
+    if (titleEntered.isEmpty || amountEntered <= 0 || _selectedDate == null) {
       return;
     }
 
-    widget.addTransaction(
-        _titleController.text, double.parse(_amountController.text),_selectedDate);
+    widget.addTransaction(_titleController.text,
+        double.parse(_amountController.text), _selectedDate);
 
     // closes the BottomSheet Dialog
     // here context is the property available in class itself like widget is available.
@@ -51,67 +51,74 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              autocorrect: true,
-              autofocus: false,
-              cursorColor: Colors.cyan,
-              decoration: InputDecoration(
-                labelText: 'Enter Title',
+    return SingleChildScrollView(
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          ),
+          margin: EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                autocorrect: true,
+                autofocus: false,
+                cursorColor: Colors.cyan,
+                decoration: InputDecoration(
+                  labelText: 'Enter Title',
+                ),
+                controller: _titleController,
               ),
-              controller: _titleController,
-            ),
-            TextField(
-              autocorrect: true,
-              autofocus: true,
-              cursorColor: Colors.cyan,
-              decoration: InputDecoration(
-                labelText: 'Enter Amount',
+              TextField(
+                autocorrect: true,
+                autofocus: true,
+                cursorColor: Colors.cyan,
+                decoration: InputDecoration(
+                  labelText: 'Enter Amount',
+                ),
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => _submitTransaction(),
               ),
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => _submitTransaction(),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No Date Choosen'
-                          : DateFormat.yMMMd().format(_selectedDate),
-                    ),
-                  ),
-                  FlatButton(
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: _openDatePicker,
-                    child: Text(
-                      "Choose Date",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'No Date Choosen'
+                            : DateFormat.yMMMd().format(_selectedDate),
                       ),
                     ),
-                  )
-                ],
+                    FlatButton(
+                      textColor: Theme.of(context).primaryColor,
+                      onPressed: _openDatePicker,
+                      child: Text(
+                        "Choose Date",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-              textColor: Theme.of(context).textTheme.button.color,
-              onPressed: _submitTransaction,
-              color: Theme.of(context).primaryColor,
-              child: Text('Add Transaction'),
-            ),
-          ],
+              RaisedButton(
+                textColor: Theme.of(context).textTheme.button.color,
+                onPressed: _submitTransaction,
+                color: Theme.of(context).primaryColor,
+                child: Text('Add Transaction'),
+              ),
+            ],
+          ),
         ),
+        elevation: 5,
       ),
-      elevation: 5,
     );
   }
 }
